@@ -1,0 +1,10 @@
+{
+    "dev": {
+        "app_function": "auth.py", 
+        "aws_region": "eu-west-1", 
+        "profile_name": "default", 
+        "project_name": "tbos-auth", 
+        "runtime": "python2.7", 
+        "s3_bucket": "zappa-dskq8rsea"
+    }
+}
