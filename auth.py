@@ -21,7 +21,7 @@ def generatePolicy(principalId, userDetails, effect, methodArn):
 
         authResponse['policyDocument'] = policyDocument
 
-        if name is not None:
+        if userDetails is not None:
             context = {
                 'name': userDetails['name'],
                 'email': userDetails['email'],
@@ -51,7 +51,7 @@ def lambda_handler(event, context):
         userDetails = {}
         userDetails['name'] = idInformation['name']
         userDetails['email'] = idInformation['email']
-        userDetails['image'] = idInformation['image']
+        userDetails['image'] = idInformation['picture']
 
     except ValueError as err:
         # Deny access if the token is invalid
