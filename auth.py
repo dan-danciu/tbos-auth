@@ -1,6 +1,7 @@
 from __future__ import print_function
 from google.auth.transport import requests
 from google.oauth2 import id_token
+import boto3
 
 def generatePolicy(principalId, userDetails, effect, methodArn):
     authResponse = {}
@@ -39,7 +40,7 @@ def lambda_handler(event, context):
             event['authorizationToken'],
             requests.Request(),
             '260183799410-3agediepvbmo0n1j23jk4se5jkgnm382.apps.googleusercontent.com')
-        print(idInformation)
+        #print(idInformation)
 
         # Deny access if the account is not a Google account
         if idInformation['iss'] not in ['accounts.google.com',
@@ -52,10 +53,17 @@ def lambda_handler(event, context):
         userDetails['name'] = idInformation['name']
         userDetails['email'] = idInformation['email']
         userDetails['image'] = idInformation['picture']
-
+        #sts_client = boto3.client('sts')
+        #assumedRoleObject = sts_client.assume_role_with_web_identity(
+            #RoleArn="arn:aws:iam::038342611788:role/lambda_basic_execution",
+            #RoleSessionName="AssumeRoleSession1",
+            #WebIdentityToken=event['authorizationToken']
+            #)
+        #credentials = assumedRoleObject['Credentials']
+        #userDetails['credentials'] = credentials
     except ValueError as err:
         # Deny access if the token is invalid
-        print(err)
+        #print(err)
         return generatePolicy(None, None, 'Deny', event['methodArn'])
 
     return generatePolicy(principalId, userDetails, 'Allow', event['methodArn'])
