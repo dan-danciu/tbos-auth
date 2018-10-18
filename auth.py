@@ -2,7 +2,7 @@ from __future__ import print_function
 from google.auth.transport import requests
 from google.oauth2 import id_token
 
-def generatePolicy(principalId, effect, methodArn):
+def generatePolicy(principalId, userDetails, effect, methodArn):
     authResponse = {}
     authResponse['principalId'] = principalId
 
@@ -21,6 +21,15 @@ def generatePolicy(principalId, effect, methodArn):
 
         authResponse['policyDocument'] = policyDocument
 
+        if name is not None:
+            context = {
+                'name': userDetails['name'],
+                'email': userDetails['email'],
+                'image': userDetails['image']
+
+            }
+            authResponse['context'] = context
+
     return authResponse
 
 def lambda_handler(event, context):
@@ -35,14 +44,18 @@ def lambda_handler(event, context):
         # Deny access if the account is not a Google account
         if idInformation['iss'] not in ['accounts.google.com',
             'https://accounts.google.com']:
-            return generatePolicy(None, 'Deny', event['methodArn'])
+            return generatePolicy(None, None, 'Deny', event['methodArn'])
 
         # Get principalId from idInformation
         principalId = idInformation['sub']
+        userDetails = {}
+        userDetails['name'] = idInformation['name']
+        userDetails['email'] = idInformation['email']
+        userDetails['image'] = idInformation['image']
 
     except ValueError as err:
         # Deny access if the token is invalid
         print(err)
-        return generatePolicy(None, 'Deny', event['methodArn'])
+        return generatePolicy(None, None, 'Deny', event['methodArn'])
 
-    return generatePolicy(principalId, 'Allow', event['methodArn'])
+    return generatePolicy(principalId, userDetails, 'Allow', event['methodArn'])
