@@ -24,6 +24,7 @@ def generatePolicy(principalId, userDetails, effect, methodArn):
 
         if userDetails is not None:
             context = {
+                'principalId': principalId,
                 'name': userDetails['name'],
                 'email': userDetails['email'],
                 'image': userDetails['image']
