@@ -22,7 +22,7 @@ pyasn1-modules==0.2.2
 python-dateutil==2.6.1
 python-slugify==1.2.4
 PyYAML==3.13
-requests==2.19.1
+requests==2.20.0
 rsa==4.0
 s3transfer==0.1.13
 six==1.11.0
